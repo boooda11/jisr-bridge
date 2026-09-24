@@ -1,0 +1,155 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "snapshot": false,
+  "tool_output": {
+    "max_lines": 120,
+    "max_bytes": 12288
+  },
+  "compaction": {
+    "auto": true,
+    "tail_turns": 10
+  },
+  "disabled_providers": [
+    "anthropic",
+    "openai"
+  ],
+  // Centralized keys: {env:NAME} refs resolved from systemd EnvironmentFiles:
+  //   /var/www2/waeyuk.com/.env  (GEMINI_API_KEY + AI_GATEWAY_* mirror)
+  //   /var/www/www2/waeyuk.com/.env  (AI_GATEWAY_* live source, laptop bridge)
+  // Specs: specs/active/opencode-centralize-keys/ + opencode-gateway-integrate/.
+  // 2026-09-21 ~12:30 UTC: gateway budget EXHAUSTED (402 on all 6 even tiny).
+  // Gateway block parked in specs/active/opencode-gateway-integrate/gateway-provider.snippet.jsonc
+  // + router map below kept as comments. All agents on gemini-lite until refill.
+  // Live-tested 2026-09-21 at real scale. List = working models ONLY.
+  // NOTE: gateway rides an SSH reverse-tunnel from the laptop (sshd on
+  // 127.0.0.1:4000). If the laptop sleeps, gateway/* dies — gemini-lite
+  // remains as the free fallback (small_model).
+  "model": "gemini/gemini-3.1-flash-lite",
+  "small_model": "gemini/gemini-3.1-flash-lite",
+  "provider": {
+    // =================================================================
+    // Gemini  —  FREE fallback (direct). Tool calling + vision verified.
+    // Not assigned to agents except via small_model; manual fallback.
+    // =================================================================
+    "gemini": {
+      "name": "Gemini (Google AI, free tier)",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "https://generativelanguage.googleapis.com/v1beta/openai",
+        "apiKey": "{env:GEMINI_API_KEY}",
+        "timeout": 7200000
+      },
+      "models": {
+        "gemini-3.1-flash-lite": {
+          "name": "Gemini 3.1 Flash Lite (FREE fallback — tools + vision)",
+          "capabilities": { "reasoning": true, "tool_call": true },
+          "limits": { "context": 1048576, "output": 65536 }
+        }
+      }
+    }
+  },
+  "command": {
+    "cline": {
+      "description": "Hand a task to the Cline agent (via the laptop LiteLLM gateway; needs the laptop awake)",
+      "template": "Run this shell command and show me its full output verbatim:\n\n```\ncline-run $ARGUMENTS\n```\n\nDo not summarise or re-do the work yourself — Cline is the one performing the task."
+    },
+    "cline-pro": {
+      "description": "Hand a task to Cline, model pinned on the LiteLLM gateway (spends credit)",
+      "template": "Run this shell command and show me its full output verbatim:\n\n```\ncline-run --provider litellm $ARGUMENTS\n```\n\nDo not summarise or re-do the work yourself — Cline is the one performing the task."
+    },
+    "cline-plan": {
+      "description": "Ask Cline to plan an approach without changing files",
+      "template": "Run this shell command and show me its full output verbatim:\n\n```\ncline-run --plan $ARGUMENTS\n```\n\nDo not summarise or re-do the work yourself — Cline is the one performing the task."
+    },
+    "cline-sessions": {
+      "description": "List this account's Cline sessions",
+      "template": "Run `cline-run --list` and show the output."
+    }
+  },
+  "default_agent": "spec-architect",
+  "instructions": [
+    "AGENTS.md"
+  ],
+  "permission": "allow",
+  // =====================================================================
+  // العقل الموزع (2026-09-21): كل agent ليه موديله من البوابة حسب دوره.
+  // مدبر=Opus5 | منفذ=Opus4.8 (مجرّب 16k) | سريع=GPT5.6-Sol | طوارئ=gemini-lite
+  // =====================================================================
+  "agent": {
+    // --- built-ins ----------------------------------------------------
+    "build": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    "plan": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    "summary": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    "title": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    "compaction": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    "spec-architect": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    // --- search / general --------------------------------------------
+    "explore": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    "general": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    // --- design / architecture ---------------------------------------
+    "architect": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    "designer": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    // --- implementation (writes code -> tool calling required) --------
+    "backend": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    "frontend": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    "implementer": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    "tester": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    "devops": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    // --- read-only auditors ------------------------------------------
+    "security": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    "bug-hunt": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    "database": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    "performance": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    "clean-code": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    // --- coordination -------------------------------------------------
+    "orchestrator": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    "critic": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    },
+    "media-fetcher": {
+      "model": "gemini/gemini-3.1-flash-lite"
+    }
+  }
+}

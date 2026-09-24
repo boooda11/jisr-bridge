@@ -1,0 +1,17 @@
+[Unit]
+Description=Jisr bridge MCP server (localhost only)
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/jisr-mcp
+Environment=JISR_MCP_BASE=/var/www/html
+Environment=JISR_MCP_HOST=127.0.0.1
+Environment=JISR_MCP_PORT=8001
+ExecStart=/opt/jisr-mcp/venv/bin/python /opt/jisr-mcp/server.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

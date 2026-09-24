@@ -1,0 +1,17 @@
+---
+name: waeyuk-command-img
+description: Waeyuk reusable workflow migrated from OpenCode command img.
+---
+
+# Migrated OpenCode command
+
+---
+description: ولّد صورة بالذكاء الاصطناعي عبر Cloudflare Workers AI
+agent: image-gen
+---
+
+ولّد صورة بالمواصفات التالية:
+
+$ARGUMENTS
+
+اتبع سير عملك الكامل: حسّن البرومبت → ولّد → افحص الجودة بموديل الرؤية → سلم المسار النهائي + التقييم، ولينك مشاركة لو المستخدم بعيد عن السيرفر.
