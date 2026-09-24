@@ -82,7 +82,9 @@ asyncio.run(f())"
    > List your tools starting with `waeyuk`, `ss_`, `net_`, `chain_`, then start any real work by opening a chain with `waeyuk_start`.
 4. If new tools don't appear: the client cached the old list — **remove + re-add the app**, then open a new chat.
 
-Suggested app description / instructions are in [`docs/CHATGPT_SETUP.md`](docs/CHATGPT_SETUP.md).
+Suggested app description / instructions are in [`docs/CHATGPT_SETUP.md`](docs/CHATGPT_SETUP.md)
+— including **all links**: tunnel creation (`platform.openai.com/.../tunnels`),
+API keys (`.../api-keys`), and app creation (`chatgpt.com/#settings/Connectors`).
 
 ## The mandatory workflow (what GPT must do)
 
