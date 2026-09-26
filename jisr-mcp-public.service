@@ -1,0 +1,19 @@
+[Unit]
+Description=Jisr bridge MCP server — PUBLIC link instance (login-gated OAuth + Bearer enforced)
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/jisr-mcp
+EnvironmentFile=/etc/jisr-bridge/auth.env
+Environment=JISR_MCP_BASE=/var/www/html
+Environment=JISR_MCP_HOST=127.0.0.1
+Environment=JISR_MCP_PORT=8003
+Environment=ENFORCE_BEARER=1
+ExecStart=/opt/jisr-mcp/venv/bin/python /opt/jisr-mcp/server.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
